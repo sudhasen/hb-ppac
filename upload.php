@@ -22,13 +22,13 @@ if ($_FILES["fileToUpload"]["size"] > 5000000) {
 
 // Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
-    echo "Incorrect";
+    echo "Incorrect".basename($_FILES["fileToUpload"]["name"]);
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         echo "Success".basename($_FILES["fileToUpload"]["name"]);
     } else {
-        echo "Error";
+        echo "Error".basename($_FILES["fileToUpload"]["name"]);
     }
 }
 ?>
