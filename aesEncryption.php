@@ -1,3 +1,5 @@
+<?php
+
 /**
  * This is a quick and dirty proof of concept for StackOverflow.
  * 
@@ -56,3 +58,4 @@ abstract class ExperimentalAES256DoNotActuallyUse
         );
     }
 }
+?>
