@@ -11,7 +11,7 @@ $flag=0;
 if(!isset($_POST['filename'])||!isset($_POST['acps'])||!isset($_POST['unblind'])){
     $flag=2;
 }else{
-    $result = mysqli_query($con,"SELECT * FROM PolicyConfig where filename='$filename';");
+    $result = mysqli_query($con,"SELECT * FROM policyconfig where filename='$filename';");
     $row = mysqli_fetch_array($result);
 
     if($row){
@@ -27,9 +27,9 @@ if($flag==2){
 }
 elseif($flag==0){
         echo 'exist';
-    }
+}
 else{
-    $res=mysqli_query($con,"INSERT INTO PolicyConfig values('$filename','$acps','$unblind');");
+    $res=mysqli_query($con,"INSERT INTO policyconfig values('$filename','$acps','$unblind');");
     if($res){
         echo 'success'; 
     }
