@@ -8,24 +8,26 @@ $filename = $_POST['filename'];
 $acps = $_POST['acps'];
 $unblind = $_POST['unblind'];
 $flag=0;
-if(!isset($filename)||!isset($acps)||!isset($unblind)){
+if(!isset($_POST['filename'])||!isset($_POST['acps'])||!isset($_POST['unblind'])){
     $flag=2;
-}
-$result = mysqli_query($con,"SELECT * FROM PolicyConfig where filename='$filename';");
-$row = mysqli_fetch_array($result);
+}else{
+    $result = mysqli_query($con,"SELECT * FROM PolicyConfig where filename='$filename';");
+    $row = mysqli_fetch_array($result);
 
-if($row){
-    $flag=0;
+    if($row){
+        $flag=0;
+    }
+    else{
+        $flag=1;
+    }
+    
 }
-else{
-    $flag=1;
-}
-if($flag==0){
-    echo 'exist';
-}
-elseif($flag==2){
+if($flag==2){
     echo 'missing terms';
 }
+elseif($flag==0){
+        echo 'exist';
+    }
 else{
     $res=mysqli_query($con,"INSERT INTO PolicyConfig values('$filename','$acps','$unblind');");
     if($res){
