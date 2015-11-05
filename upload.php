@@ -37,12 +37,8 @@ if ($uploadOk == 0) {
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        //if(encryptFileAndPrepareKeys())
-        //echo "Success".basename($_FILES["fileToUpload"]["name"]);
-        $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for read!");
-    $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
-    fclose($myfile);
-        echo $fileContent;
+        if(encryptFileAndPrepareKeys())
+        echo "Success".basename($_FILES["fileToUpload"]["name"]);
     
         
     } else {
@@ -54,8 +50,8 @@ function encryptFileAndPrepareKeys(){
     $eKey = openssl_random_pseudo_bytes(32);
     $aKey = openssl_random_pseudo_bytes(32);
     //File currentFile=fopen($target_dir.basename($_FILES["fileToUpload"]["name"]));
-    $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for read!");
-    $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
+    $myfile = fopen($_GLOBAL['$target_dir'].basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for read!");
+    $fileContent=fread($myfile,filesize($_GLOBAL['$target_dir'].basename($_FILES["fileToUpload"]["name"])));
     fclose($myfile);
     $encrypted = ExperimentalAES256DoNotActuallyUse::encrypt($fileContent, $eKey, $aKey);
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for write!");
