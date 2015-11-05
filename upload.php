@@ -47,11 +47,12 @@ if ($uploadOk == 0) {
 }
 
 function encryptFileAndPrepareKeys(){
+    global $target_dir;
     $eKey = openssl_random_pseudo_bytes(32);
     $aKey = openssl_random_pseudo_bytes(32);
     //File currentFile=fopen($target_dir.basename($_FILES["fileToUpload"]["name"]));
-    $myfile = fopen($_GLOBAL['$target_dir'].basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for read!");
-    $fileContent=fread($myfile,filesize($_GLOBAL['$target_dir'].basename($_FILES["fileToUpload"]["name"])));
+    $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for read!");
+    $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
     fclose($myfile);
     $encrypted = ExperimentalAES256DoNotActuallyUse::encrypt($fileContent, $eKey, $aKey);
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for write!");
@@ -81,6 +82,7 @@ function encryptSymmetricAndMacKeyUsingRSA($sym,$mac){
 }
 
 function storeInDatabase($esk,$emk,$pk){
+    global $level;
     $con=mysqli_connect("ap-cdbr-azure-southeast-a.cloudapp.net:3306","b8fdb7a0f430b6","3770357f","datacomm");
     if (mysqli_connect_errno($con))
     {
