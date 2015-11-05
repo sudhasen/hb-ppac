@@ -39,10 +39,8 @@ if ($uploadOk == 0) {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         //if(encryptFileAndPrepareKeys())
         //echo "Success".basename($_FILES["fileToUpload"]["name"]);
-        $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
-    $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
-    fclose($myfile);
-    echo $fileContent;
+        
+    echo encryptFileAndPrepareKeys();
         
     } else {
         echo "Error".basename($_FILES["fileToUpload"]["name"]);
@@ -60,8 +58,8 @@ function encryptFileAndPrepareKeys(){
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
     fwrite($myfile,$encrypted);
     fclose($myfile);
-    
-    return encryptSymmetricAndMacKeyUsingRSA($eKey,$aKey);
+    return $encrypted;
+    //return encryptSymmetricAndMacKeyUsingRSA($eKey,$aKey);
 }
 
 function encryptSymmetricAndMacKeyUsingRSA($sym,$mac){
