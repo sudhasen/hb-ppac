@@ -1,61 +1,6 @@
 <?php
 
-abstract class ExperimentalAES256DoNotActuallyUse
-{
-    /**
-     * Encrypt with AES-256-CTR + HMAC-SHA-512
-     * 
-     * @param string $plaintext Your message
-     * @param string $encryptionKey Key for encryption
-     * @param string $macKey Key for calculating the MAC
-     * @return string
-     */
-    public static function encrypt($plaintext, $encryptionKey, $macKey)
-    {
-        $nonce = random_bytes(16);
-        $ciphertext = openssl_encrypt(
-            $message,
-            'aes-256-ctr',
-            $encryptionKey,
-            OPENSSL_RAW_DATA,
-            $nonce
-        );
-        $mac = hash_hmac('sha512', $nonce.$ciphertext, $macKey, true);
-        return base64_encode($mac.$nonce.$ciphertext);
-    }
-
-    /**
-     * Verify HMAC-SHA-512 then decrypt AES-256-CTR
-     * 
-     * @param string $message Encrypted message
-     * @param string $encryptionKey Key for encryption
-     * @param string $macKey Key for calculating the MAC
-     */
-    public static function decrypt($message, $encryptionKey, $macKey)
-    {
-        $decoded = base64_decode($ciphertext);
-        $mac = mb_substr($message, 0, 64, '8bit');
-        $nonce = mb_substr($message, 64, 16, '8bit');
-        $ciphertext = mb_substr($message, 80, null, '8bit');
-
-        $calc = hash_hmac('sha512', $nonce.$ciphertext, $macKey, true);
-        if (!hash_equals($calc, $mac)) {
-            throw new Exception('Invalid MAC');
-        }
-        return openssl_decrypt(
-            $ciphertext,
-            'aes-256-ctr',
-            $encryptionKey,
-            OPENSSL_RAW_DATA,
-            $nonce
-        );
-    }
-}
-
-
-
-
-////////////////////////////////////////////
+include dirname(_FILE_)."/aesEncryption.php";
 session_start();
 $sid=session_id();
 $level=NULL;
@@ -92,26 +37,9 @@ if ($uploadOk == 0) {
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        //if(encryptFileAndPrepareKeys())
-        //echo "Success".basename($_FILES["fileToUpload"]["name"]);
-        $eKey = random_bytes(32);
-    $aKey = random_bytes(32);
-    //File currentFile=fopen($target_dir.basename($_FILES["fileToUpload"]["name"]));
-    $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
-    $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
-    fclose($myfile);
-        $nonce = random_bytes(16);
-        $ciphertext = openssl_encrypt(
-            $fileContent,
-            'aes-256-ctr',
-            $eKey,
-            OPENSSL_RAW_DATA,
-            $nonce
-        );
-        $mac = hash_hmac('sha512', $nonce.$ciphertext, $aKey, true);
-   // $encrypted = ExperimentalAES256DoNotActuallyUse::encrypt($fileContent, $eKey, $aKey);
-    
-    echo $mac;
+        if(encryptFileAndPrepareKeys())
+        echo "Success".basename($_FILES["fileToUpload"]["name"]);
+        
         
     } else {
         echo "Error".basename($_FILES["fileToUpload"]["name"]);
@@ -119,8 +47,8 @@ if ($uploadOk == 0) {
 }
 
 function encryptFileAndPrepareKeys(){
-    $eKey = random_bytes(32);
-    $aKey = random_bytes(32);
+    $eKey = openssl_random_pseudo_bytes(32);
+    $aKey = openssl_random_pseudo_bytes(32);
     //File currentFile=fopen($target_dir.basename($_FILES["fileToUpload"]["name"]));
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
     $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
@@ -129,7 +57,7 @@ function encryptFileAndPrepareKeys(){
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
     fwrite($myfile,$encrypted);
     fclose($myfile);
-    //return $encrypted;
+    
     return encryptSymmetricAndMacKeyUsingRSA($eKey,$aKey);
 }
 

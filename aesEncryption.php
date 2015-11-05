@@ -19,7 +19,7 @@ abstract class ExperimentalAES256DoNotActuallyUse
      */
     public static function encrypt($plaintext, $encryptionKey, $macKey)
     {
-        $nonce = random_bytes(16);
+        $nonce = openssl_random_pseudo_bytes(16);
         $ciphertext = openssl_encrypt(
             $message,
             'aes-256-ctr',
