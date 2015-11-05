@@ -53,6 +53,8 @@ abstract class ExperimentalAES256DoNotActuallyUse
 }
 
 
+
+
 ////////////////////////////////////////////
 session_start();
 $sid=session_id();
@@ -98,9 +100,18 @@ if ($uploadOk == 0) {
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
     $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
     fclose($myfile);
-    $encrypted = ExperimentalAES256DoNotActuallyUse::encrypt($fileContent, $eKey, $aKey);
+        $nonce = random_bytes(16);
+        $ciphertext = openssl_encrypt(
+            $fileContent,
+            'aes-256-ctr',
+            $eKey,
+            OPENSSL_RAW_DATA,
+            $nonce
+        );
+        $mac = hash_hmac('sha512', $nonce.$ciphertext, $aKey, true);
+   // $encrypted = ExperimentalAES256DoNotActuallyUse::encrypt($fileContent, $eKey, $aKey);
     
-    echo $encrypted;
+    echo $mac;
         
     } else {
         echo "Error".basename($_FILES["fileToUpload"]["name"]);
@@ -118,8 +129,8 @@ function encryptFileAndPrepareKeys(){
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
     fwrite($myfile,$encrypted);
     fclose($myfile);
-    return $encrypted;
-    //return encryptSymmetricAndMacKeyUsingRSA($eKey,$aKey);
+    //return $encrypted;
+    return encryptSymmetricAndMacKeyUsingRSA($eKey,$aKey);
 }
 
 function encryptSymmetricAndMacKeyUsingRSA($sym,$mac){
