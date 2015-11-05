@@ -1,6 +1,6 @@
 <?php
 
-include("aesEncryption.php");
+include dirname(_FILE_)."/aesEncryption.php";
 session_start();
 $sid=session_id();
 $level=NULL;
