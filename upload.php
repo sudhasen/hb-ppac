@@ -88,10 +88,10 @@ function storeInDatabase($esk,$emk,$pk){
     }
     $fn=basename($_FILES["fileToUpload"]["name"]);
     
-    $result = mysqli_query($con,"SELECT * FROM cloudFiles where filename='$fn';");
+    $result = mysqli_query($con,"SELECT * FROM cloudfiles where filename='$fn';");
     $row = mysqli_fetch_array($result);
     if($row){
-        $res=mysqli_query($con,"UPDATE cloudFiles set level='$level',esk='$esk',emk='$emk',sk='$pk' where filename='$fn';");
+        $res=mysqli_query($con,"UPDATE cloudfiles set level='$level',esk='$esk',emk='$emk',sk='$pk' where filename='$fn';");
         if($res){
             return true; 
         }
@@ -101,7 +101,7 @@ function storeInDatabase($esk,$emk,$pk){
         }
     }
     else{
-        $res=mysqli_query($con,"INSERT INTO cloudFiles values('$fn','$level','$esk','$emk','$pk');");
+        $res=mysqli_query($con,"INSERT INTO cloudfiles values('$fn','$level','$esk','$emk','$pk');");
         if($res){
             return true; 
         }
