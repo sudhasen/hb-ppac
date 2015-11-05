@@ -70,6 +70,13 @@ function encryptSymmetricAndMacKeyUsingRSA($sym,$mac){
     );
     $privKey=NULL;
     $res=openssl_pkey_new($config);
+    if($res==false){
+        echo "pkey false";
+        
+    }
+    else{
+        echo $res;
+    }
     openssl_pkey_export($res,$privKey);
     $pubKey=openssl_pkey_get_details($res);
     $pubKey=$pubKey["key"];
