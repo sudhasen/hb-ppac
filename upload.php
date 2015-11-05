@@ -49,7 +49,7 @@ if ($uploadOk == 0) {
 function encryptFileAndPrepareKeys(){
     $eKey = random_bytes(32);
     $aKey = random_bytes(32);
-    File currentFile=fopen($target_dir.basename($_FILES["fileToUpload"]["name"]));
+    //File currentFile=fopen($target_dir.basename($_FILES["fileToUpload"]["name"]));
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
     $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
     fclose($myfile);
