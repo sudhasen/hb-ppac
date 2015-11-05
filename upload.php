@@ -39,8 +39,15 @@ if ($uploadOk == 0) {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         //if(encryptFileAndPrepareKeys())
         //echo "Success".basename($_FILES["fileToUpload"]["name"]);
-        
-    echo encryptFileAndPrepareKeys();
+        $eKey = random_bytes(32);
+    $aKey = random_bytes(32);
+    //File currentFile=fopen($target_dir.basename($_FILES["fileToUpload"]["name"]));
+    $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file!");
+    $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
+    fclose($myfile);
+    $encrypted = ExperimentalAES256DoNotActuallyUse::encrypt($fileContent, $eKey, $aKey);
+    
+    echo $encrypted;
         
     } else {
         echo "Error".basename($_FILES["fileToUpload"]["name"]);
