@@ -21,7 +21,7 @@ abstract class ExperimentalAES256DoNotActuallyUse
     {
         $nonce = openssl_random_pseudo_bytes(16);
         $ciphertext = openssl_encrypt(
-            $message,
+            $plaintext,
             'aes-256-ctr',
             $encryptionKey,
             OPENSSL_RAW_DATA,
