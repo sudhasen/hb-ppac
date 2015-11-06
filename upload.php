@@ -54,7 +54,10 @@ function encryptFileAndPrepareKeys(){
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for read!");
     $fileContent=fread($myfile,filesize($target_dir.basename($_FILES["fileToUpload"]["name"])));
     fclose($myfile);
+    $bt=microtime();
     $encrypted = ExperimentalAES256DoNotActuallyUse::encrypt($fileContent, $eKey, $aKey);
+    $diff=microtime()-$bt;
+    echo $diff;
     $myfile = fopen($target_dir.basename($_FILES["fileToUpload"]["name"]), "r+") or die("Unable to open file for write!");
     fwrite($myfile,$encrypted);
     fclose($myfile);
